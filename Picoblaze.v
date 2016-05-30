@@ -163,9 +163,6 @@ wire			int_request;
         // Read input_port_c at port address 02 hex
         8'h02 : in_port <= CONTROL;
 
-        // To ensure minimum logic implementation when defining a multiplexer always
-        // use don't care for any of the unused cases (although there are none in this 
-        // example).
 
         default : in_port <= 8'bXXXXXXXX ;  
 
@@ -221,93 +218,48 @@ wire			int_request;
   always @ (posedge clk)
   begin
 
-      // 'write_strobe' is used to qualify all writes to general output ports.
       if (write_strobe == 1'b1) begin
-
-        // Write to output_port_w at port address 01 hex
-        if (port_id == 8'h03) begin
-          Ctrl_wr_rd <= out_port;
-        end
-
-        // Write to output_port_x at port address 02 hex
-        if (port_id == 8'h04) begin
-          Data <= out_port;
-        end
-
-        // Write to output_port_y at port address 04 hex
-        if (port_id == 8'h05) begin
-          Direccion <= out_port;
-        end
-
-        // Write to output_port_z at port address 08 hex
-        if (port_id == 8'h06) begin
-          VGA_sg <= out_port;
-        end
-			
-			if (port_id == 8'h07) begin
-          VGA_mn <= out_port;
-        end
-		  
-		  if (port_id == 8'h08) begin
-          VGA_hr <= out_port;
-        end
-		  
-		  if (port_id == 8'h09) begin
-          VGA_di <= out_port;
-        end
-		  
-		  if (port_id == 8'h0a) begin
-          VGA_me <= out_port;
-        end
-		  
-		  if (port_id == 8'h0b) begin
-          VGA_an <= out_port;
-        end
-		  
-		  if (port_id == 8'h0c) begin
-          VGA_sgT <= out_port;
-        end
-		  
-		  if (port_id == 8'h0d) begin
-          VGA_mnT <= out_port;
-        end
-		  
-		  if (port_id == 8'h0e) begin
-          VGA_hrT <= out_port;
-        end
-		  
-		  if (port_id == 8'h0f) begin
-          tecla_leida <= out_port;
-        end
-		  
+			if (port_id == 8'h03) begin
+				Ctrl_wr_rd <= out_port;
+			end
+			if (port_id[3:0] == 4'h4) begin
+				Data <= out_port;
+			end
+			if (port_id[3:0] == 4'h5) begin
+				Direccion <= out_port;
+			end
+			if (port_id[3:0] == 4'h6) begin
+				VGA_sg <= out_port;
+			end
+			if (port_id[3:0] == 4'h7) begin
+				VGA_mn <= out_port;
+			end
+			if (port_id[3:0] == 4'h8) begin
+				VGA_hr <= out_port;
+			end		  
+			if (port_id[3:0] == 4'h9) begin
+				VGA_di <= out_port;
+			end		  
+			if (port_id[3:0] == 4'ha) begin
+				VGA_me <= out_port;
+			end		  
+			if (port_id[3:0] == 4'hb) begin
+				VGA_an <= out_port;
+			end		  
+			if (port_id[3:0] == 4'hc) begin
+				VGA_sgT <= out_port;
+			end		  
+			if (port_id[3:0] == 4'hd) begin
+				VGA_mnT <= out_port;
+			end		  
+			if (port_id[3:0] == 4'he) begin
+				VGA_hrT <= out_port;
+			end		  
+			if (port_id[3:0] == 4'hf) begin
+				tecla_leida <= out_port;
+			end		  
       end
 
   end
-
-
-
-
-
-
-  //
-  /////////////////////////////////////////////////////////////////////////////////////////
-  // Constant-Optimised Output Ports 
-  /////////////////////////////////////////////////////////////////////////////////////////
-  //
-  //
-  // Implementation of the Constant-Optimised Output Ports should follow the same basic 
-  // concepts as General Output Ports but remember that only the lower 4-bits of 'port_id'
-  // are used and that 'k_write_strobe' is used as the qualifier.
-  //
-
-  /////////////////////////////////////////////////////////////////////////////////////////
-  // Recommended 'closed loop' interrupt interface (when required).
-  /////////////////////////////////////////////////////////////////////////////////////////
-  //
-  // Interrupt becomes active when 'int_request' is observed and then remains active until 
-  // acknowledged by KCPSM6. Please see description and waveforms in documentation.
-  //
-
-
 
 endmodule 
