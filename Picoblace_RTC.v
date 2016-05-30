@@ -19,8 +19,8 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module Picoblace_RTC(input clk,reset,
-	input [7:0]PS2,
 	input [6:0]Tecla_lista,
+	input wire [7:0]key_code,
 	output wire[7:0]VGA_sg,VGA_mn,VGA_hr,VGA_di,VGA_me,VGA_an,VGA_sgT,VGA_mnT,VGA_hrT,tecla_leida,
 	output wire A_D,RD,WR,CS,
 	inout  [7:0]io_port 
@@ -33,6 +33,7 @@ reg OP,I,AD;
 wire Final_WR;
 wire [7:0] data_out;
 wire [7:0] Data,Direccion;
+reg [7:0]PS2;
 
 always @*
 begin
@@ -46,6 +47,21 @@ always @(Final_WR or Tecla_lista)
 begin
 	CONTROL = {Tecla_lista[6:0],Final_WR};
 end
+
+always @*
+	case(key_code)
+		8'h45: PS2 = 8'h00;
+		8'h16: PS2 = 8'h01;
+		8'h1E: PS2 = 8'h02;
+		8'h26: PS2 = 8'h03;
+		8'h25: PS2 = 8'h04;
+		8'h2E: PS2 = 8'h05;
+		8'h36: PS2 = 8'h06;
+		8'h3D: PS2 = 8'h07;
+		8'h3E: PS2 = 8'h08;
+		8'h46: PS2 = 8'h09;
+		default: PS2 = key_code;
+	endcase
 
 BUS_IO2 Bus_datos (
     .clk(clk), 
