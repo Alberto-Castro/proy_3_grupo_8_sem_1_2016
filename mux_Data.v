@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: Alberto Castro G.
 // 
-// Create Date:    09:49:58 03/25/2016 
+// Create Date:    21:06:46 03/30/2016 
 // Design Name: 
-// Module Name:    Contador_4bits 
+// Module Name:    mux_Data 
 // Project Name: 
 // Target Devices: 
 // Tool versions: 
@@ -18,25 +18,20 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module Contador_4bits(
-   input wire clk,reset_clk,
-	output wire [4:0] conta_1
+module mux_Data(
+	input [7:0] Data_WI,Data_WF,Data_I,Data_WR,
+	input wire [1:0] data_sel,
+	output reg [7:0] Data
     );
 	 
-reg[4:0] conta;
-
-//procedieminto para el contador
-always @ (posedge clk)
-	begin 
-		if (reset_clk==1)
-			conta=4'b0000;
-		else
-			if (conta==5'd23)
-				conta=4'b0000;
-			else
-				conta=conta+1'b1;
-	end
+always @*
 	
-assign conta_1=conta;
+	case (data_sel)
+		2'b00: Data = Data_WI;
+		2'b01: Data = Data_WF;
+		2'b10: Data = Data_I;
+		2'b11: Data = Data_WR;
+		default: Data = Data_WR;
+	endcase
 
 endmodule

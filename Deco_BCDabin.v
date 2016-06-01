@@ -1,11 +1,11 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
-// Engineer: Alberto Castro G.
+// Engineer: 
 // 
-// Create Date:    09:49:58 03/25/2016 
+// Create Date:    17:16:03 03/31/2016 
 // Design Name: 
-// Module Name:    Contador_4bits 
+// Module Name:    Deco_BCDabin 
 // Project Name: 
 // Target Devices: 
 // Tool versions: 
@@ -18,25 +18,20 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module Contador_4bits(
-   input wire clk,reset_clk,
-	output wire [4:0] conta_1
+module Deco_BCDabin(
+   input [7:0] Ld_BCD,
+	output [6:0] Ld_bin
     );
 	 
-reg[4:0] conta;
+reg [6:0] suma1,suma2,suma3;
 
-//procedieminto para el contador
-always @ (posedge clk)
-	begin 
-		if (reset_clk==1)
-			conta=4'b0000;
-		else
-			if (conta==5'd23)
-				conta=4'b0000;
-			else
-				conta=conta+1'b1;
-	end
-	
-assign conta_1=conta;
+always @*
+begin
+	suma1 = {3'b0,Ld_BCD[3:0]};
+	suma2 = {2'b0,Ld_BCD[7:4],1'b0};
+	suma3 = {Ld_BCD[7:4],3'b0};
+end
+
+assign Ld_bin = suma1 + suma2 + suma3;
 
 endmodule

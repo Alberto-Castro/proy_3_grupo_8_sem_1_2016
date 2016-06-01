@@ -1,11 +1,11 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
-// Engineer: Alberto Castro G.
+// Engineer: 
 // 
-// Create Date:    09:49:58 03/25/2016 
+// Create Date:    10:23:23 04/11/2016 
 // Design Name: 
-// Module Name:    Contador_4bits 
+// Module Name:    Mux_sel_reg 
 // Project Name: 
 // Target Devices: 
 // Tool versions: 
@@ -18,25 +18,16 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module Contador_4bits(
-   input wire clk,reset_clk,
-	output wire [4:0] conta_1
+module Mux_sel_reg(
+	input wire [3:0] sel_reg_W, sel_reg_L,
+	input wire selec,
+	output reg [3:0] sel_reg
     );
-	 
-reg[4:0] conta;
 
-//procedieminto para el contador
-always @ (posedge clk)
-	begin 
-		if (reset_clk==1)
-			conta=4'b0000;
-		else
-			if (conta==5'd23)
-				conta=4'b0000;
-			else
-				conta=conta+1'b1;
-	end
+always @*
+	case (selec)
+		1'b0: sel_reg = sel_reg_L;
+		1'b1: sel_reg = sel_reg_W;
+	endcase
 	
-assign conta_1=conta;
-
 endmodule

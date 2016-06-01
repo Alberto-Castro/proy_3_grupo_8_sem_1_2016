@@ -1,11 +1,11 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
-// Engineer: Alberto Castro G.
+// Engineer: 
 // 
-// Create Date:    09:49:58 03/25/2016 
+// Create Date:    20:03:47 04/03/2016 
 // Design Name: 
-// Module Name:    Contador_4bits 
+// Module Name:    mux_ctrl_AD 
 // Project Name: 
 // Target Devices: 
 // Tool versions: 
@@ -18,25 +18,16 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module Contador_4bits(
-   input wire clk,reset_clk,
-	output wire [4:0] conta_1
+module mux_ctrl_AD(
+   input wire AD_W, AD_I,
+	input wire sel_ctrl_AD,
+	output reg sel_AD
     );
-	 
-reg[4:0] conta;
 
-//procedieminto para el contador
-always @ (posedge clk)
-	begin 
-		if (reset_clk==1)
-			conta=4'b0000;
-		else
-			if (conta==5'd23)
-				conta=4'b0000;
-			else
-				conta=conta+1'b1;
-	end
+always @*
+	case (sel_ctrl_AD)
+		1'b0: sel_AD = AD_W;
+		1'b1: sel_AD = AD_I;
+	endcase
 	
-assign conta_1=conta;
-
 endmodule

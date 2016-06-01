@@ -1,11 +1,11 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
-// Engineer: Alberto Castro G.
+// Engineer: Alberto Castro G. 
 // 
-// Create Date:    09:49:58 03/25/2016 
+// Create Date:    21:14:20 03/30/2016 
 // Design Name: 
-// Module Name:    Contador_4bits 
+// Module Name:    Deco_Formato_Hora 
 // Project Name: 
 // Target Devices: 
 // Tool versions: 
@@ -18,25 +18,18 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module Contador_4bits(
-   input wire clk,reset_clk,
-	output wire [4:0] conta_1
+module Deco_Formato_Hora(
+	input SF_24_12,SF_Timer,
+	output reg [7:0] Data_WI,Data_WF
     );
-	 
-reg[4:0] conta;
 
-//procedieminto para el contador
-always @ (posedge clk)
-	begin 
-		if (reset_clk==1)
-			conta=4'b0000;
-		else
-			if (conta==5'd23)
-				conta=4'b0000;
-			else
-				conta=conta+1'b1;
+always @*
+
+	begin
+		Data_WI={3'b000,SF_24_12,SF_Timer,3'b000};
+		Data_WF={3'b001,SF_24_12,SF_Timer,3'b000};
 	end
+	//SF_24_12 SF_Timer
 	
-assign conta_1=conta;
-
+	
 endmodule
