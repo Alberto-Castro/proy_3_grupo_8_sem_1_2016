@@ -3,16 +3,13 @@ module kb_code
     // 2^W_SIZE words in FIFO
    (
     input wire clk, reset, var,
-    input wire ps2d, ps2c, rd_key_code,
+    input wire ps2d, ps2c, 
     output reg [7:0] key_code,
 	 output reg listo
    );
 	
 	
-	//reg listo1;
-	//reg [7:0] key_code1;
-	//assign key_code =  key_code1;
-	//assign listo = listo1;
+
    // constant declaration
    localparam BRK = 8'hf0; // break code
 
@@ -38,8 +35,13 @@ module kb_code
        .ps2d(ps2d), .ps2c(ps2c),
        .rx_done_tick(scan_done_tick), .dout(scan_out));
 		 
-
-
+	/*always @(posedge clk)
+	begin
+		if (got_code_tick)
+			key_code = 8'h00;
+		else
+			key_code = scan_out;
+	end*/
    //=======================================================
    // FSM to get the scan code after F0 received
    //=======================================================

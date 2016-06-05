@@ -20,12 +20,14 @@
 //////////////////////////////////////////////////////////////////////////////////
 module Prueba_Pico(input clk,
 	input wire ps2d, ps2c,
+	input sw1,sw2,IRQ1,
 	output wire [7:0]  rgb,
-	output wire hsync_o, vsync_o,
+	output wire hsync_o, vsync_o,ampPWM,
 	output wire A_D,RD,WR,CS,
 	inout  [7:0]io_port
     );
 
+wire IRQ;
 wire [7:0] seg_VGA,min_VGA,hora_VGA,day_VGA,month_VGA,year_VGA,seg_t_VGA,min_t_VGA,hora_t_VGA;
 wire [3:0] digUH, digDH, digUM, digDM, digUS, digDS, digUD, digDD, digUME, digDME, digUA, digDA, digUHC, digDHC, digUMC, digDMC, digUSC, digDSC;
 wire reset;
@@ -35,7 +37,7 @@ wire [2:0]PS2;
 
 assign reset = PS2[2];
 assign digUH = hora_VGA[3:0];
-assign digDH = hora_VGA[7:4];
+assign digDH = {1'b0,hora_VGA[6:4]};
 assign digUM = min_VGA[3:0];
 assign digDM = min_VGA[7:4];
 assign digUS = seg_VGA[3:0];
@@ -52,6 +54,7 @@ assign digUMC = min_t_VGA[3:0];
 assign digDMC = min_t_VGA[7:4];
 assign digUSC = seg_t_VGA[3:0];
 assign digDSC = seg_t_VGA[7:4];
+assign IRQ = ~IRQ1;
 
 Interfaz_PS2_RTC PS2_RTC (
     .key_code(key_code), 
@@ -76,7 +79,6 @@ kb_code modulo_PS2 (
     .var(var), 
     .ps2d(ps2d), 
     .ps2c(ps2c), 
-    .rd_key_code(rd_key_code), 
     .key_code(key_code), 
     .listo(listo)
     );
@@ -111,8 +113,12 @@ RTC RTC (
 
 MainActivity VGA(
     .rgb(rgb), 
-    .clk_i(clk), 
-    .reset_i(reset), 
+    .clk_i(clk),
+    .reset_i(reset),
+	 .sw1(sw1),
+	 .sw2(sw2),
+	 .IRQ(IRQ),
+	 .ampPWM(ampPWM),
     .digUH(digUH), 
     .digDH(digDH), 
     .digUM(digUM), 

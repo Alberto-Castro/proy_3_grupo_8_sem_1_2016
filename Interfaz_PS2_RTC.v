@@ -27,49 +27,56 @@ module Interfaz_PS2_RTC(input [7:0]key_code,
 
 reg [7:0]Tecla_leida;
 reg [1:0] Est_Actual,Est_Sig;
-reg listo1;
+reg listo1,ini;
 
-always @ (posedge clk, posedge reset)
+always @(posedge clk, posedge reset)
 begin 
 	if (reset)
-		begin
-		Est_Actual=2'b00;
-		end
+		Est_Actual<=2'b00;
 	else
-		begin
-		Est_Actual=Est_Sig;
-		end
+		Est_Actual<=Est_Sig;
 end 
 
 always @*
 begin
 	Est_Sig=Est_Actual;
 	case (Est_Actual)
-		2'b00: 
+		2'b00:
 		begin
+			ini = 1'b1;
+			listo1 = 1'b0;
+			var = 1'b0;
+			Est_Sig = 2'b01;
+		end
+		2'b01: 
+		begin
+			ini = 1'b0;
 			listo1 = 1'b0;
 			var = 1'b0;
 			if (listo)
-				Est_Sig = 2'b01;
+				Est_Sig = 2'b10;
 			else
 			begin
-				Est_Sig = 2'b00;
+				Est_Sig = 2'b01;
 			end
 		end
-		2'b01:
+		2'b10:
 		begin 
+			ini = 1'b0;
 			listo1 = 1'b1;
 			var = 1'b1;
-			Est_Sig = 2'b10;
+			Est_Sig = 2'b11;
 		end
-		2'b10:
+		2'b11:
 		begin
+			ini = 1'b0;
 			listo1 = 1'b0;
-			var = 1'b0;
-			Est_Sig = 2'b00;
+			var = 1'b1;
+			Est_Sig = 2'b01;
 		end 
 		default: 
 		begin
+			ini = 1'b0;
 			Est_Sig = 2'b00;
 			listo1 = 1'b0;
 			var = 1'b0;
@@ -77,24 +84,21 @@ begin
 	endcase
 end
 
-always @(posedge clk)
+always @*
 begin
-	if (reset)
+	if (listo1)
+		Tecla_leida = key_code;
+	else if (ini)
 		Tecla_leida = 8'b00000001;
 	else
-	begin
-		if (listo1)
-			Tecla_leida = key_code;
-		else
-			Tecla_leida = 8'b0;
-	end
+		Tecla_leida = 8'b00000000;
 end
 
 always @*
 	case(Tecla_leida)
 		8'h00:begin
-			PS2 = 3'b000;
-			SF_Timer = SF_Timer;
+			PS2 = PS2;
+			SF_Timer = 1'b1;
 			SF_24_12 = SF_24_12;
 			SF_AM_PM = SF_AM_PM;
 			PB_program_SA = 1'b0;
@@ -116,7 +120,7 @@ always @*
 		end
 		8'h1d:begin
 			PS2 = 3'b000;
-			SF_Timer = SF_Timer;
+			SF_Timer = 1'b1;
 			SF_24_12 = SF_24_12;
 			SF_AM_PM = SF_AM_PM;
 			PB_program_SA = 1'b0;
@@ -127,7 +131,7 @@ always @*
 		end
 		8'h1b:begin
 			PS2 = 3'b000;
-			SF_Timer = SF_Timer;
+			SF_Timer = 1'b1;
 			SF_24_12 = SF_24_12;
 			SF_AM_PM = SF_AM_PM;
 			PB_program_SA = 1'b0;
@@ -138,7 +142,7 @@ always @*
 		end
 		8'h23:begin
 			PS2 = 3'b000;
-			SF_Timer = SF_Timer;
+			SF_Timer = 1'b1;
 			SF_24_12 = SF_24_12;
 			SF_AM_PM = SF_AM_PM;
 			PB_program_SA = 1'b0;
@@ -149,7 +153,7 @@ always @*
 		end
 		8'h1c:begin
 			PS2 = 3'b000;
-			SF_Timer = SF_Timer;
+			SF_Timer = 1'b1;
 			SF_24_12 = SF_24_12;
 			SF_AM_PM = SF_AM_PM;
 			PB_program_SA = 1'b0;
@@ -160,7 +164,7 @@ always @*
 		end
 		8'h24:begin
 			PS2 = 3'b010;
-			SF_Timer = SF_Timer;
+			SF_Timer = 1'b1;
 			SF_24_12 = SF_24_12;
 			SF_AM_PM = SF_AM_PM;
 			PB_program_SA = 1'b0;
@@ -171,9 +175,9 @@ always @*
 		end
 		8'h2d:begin
 			PS2 = 3'b100;
-			SF_Timer = SF_Timer;
-			SF_24_12 = SF_24_12;
-			SF_AM_PM = SF_AM_PM;
+			SF_Timer = 1'b0;
+			SF_24_12 = 1'b0;
+			SF_AM_PM = 1'b0;
 			PB_program_SA = 1'b0;
 			PB_up_SA = 1'b0;
 			PB_left_SA = 1'b0;
@@ -182,7 +186,7 @@ always @*
 		end
 		8'h2b:begin
 			PS2 = 3'b000;
-			SF_Timer = SF_Timer;
+			SF_Timer = 1'b1;
 			SF_24_12 = ~SF_24_12;
 			SF_AM_PM = SF_AM_PM;
 			PB_program_SA = 1'b0;
@@ -193,7 +197,7 @@ always @*
 		end
 		8'h2a:begin
 			PS2 = 3'b000;
-			SF_Timer = SF_Timer;
+			SF_Timer = 1'b1;
 			SF_24_12 = SF_24_12;
 			SF_AM_PM = ~SF_AM_PM;
 			PB_program_SA = 1'b0;
@@ -203,8 +207,8 @@ always @*
 			PB_down_SA = 1'b0;
 		end
 		8'h43:begin
-			PS2 = 3'b100;
-			SF_Timer = SF_Timer;
+			PS2 = 3'b001;
+			SF_Timer = 1'b1;
 			SF_24_12 = SF_24_12;
 			SF_AM_PM = SF_AM_PM;
 			PB_program_SA = 1'b0;
@@ -215,7 +219,7 @@ always @*
 		end
 		8'h4d:begin
 			PS2 = 3'b000;
-			SF_Timer = SF_Timer;
+			SF_Timer = 1'b1;
 			SF_24_12 = SF_24_12;
 			SF_AM_PM = SF_AM_PM;
 			PB_program_SA = 1'b1;
@@ -226,7 +230,7 @@ always @*
 		end
 		8'h2c:begin
 			PS2 = 3'b000;
-			SF_Timer = ~SF_Timer;
+			SF_Timer = 1'b1;
 			SF_24_12 = SF_24_12;
 			SF_AM_PM = SF_AM_PM;
 			PB_program_SA = 1'b0;
@@ -247,5 +251,6 @@ always @*
 			PB_down_SA = 1'b0;
 		end
 	endcase
+
 
 endmodule

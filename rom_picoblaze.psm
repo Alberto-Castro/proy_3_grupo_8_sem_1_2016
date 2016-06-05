@@ -1,0 +1,60 @@
+#EQU Fin,0x00
+#EQU Iniciar,0x02
+#EQU Dir_sel,0x03
+Start: 		load s0,0x03
+			wrprt s0,Dir_sel
+			rdprt s0, Fin
+			and s0,0x08
+			comp s0,0x00
+			jump z Start
+			call Inicio
+Prog:		call Escribir
+Lect:		call Leer
+			rdprt s5,Fin
+			load s6,s5
+			and s5,0x10
+			comp s5,0x10
+			jump z Prog
+			and s6,0x20
+			comp s6,0x20
+			jump z Start
+			jump Lect
+Inicio:		load s1,0x01
+			load s2,0x02
+			wrprt s2,Dir_sel
+			wrprt s1,Iniciar
+			load s1,0x00
+			wrprt s1,Iniciar
+			call wait_I
+			ret
+Escribir:	load s2,0x01
+			load s1,0x02
+			wrprt s2,Dir_sel
+			wrprt s1,Iniciar
+			load s2,0x00
+			wrprt s2,Iniciar
+			call wait_E
+			ret
+Leer:		load s3,0x00
+			wrprt s3,Dir_sel
+			load s3,0x04
+			wrprt s3,Iniciar
+			load s3,0x00
+			wrprt s3,Iniciar
+			call wait_L
+			ret
+wait_I:		rdprt s4,Fin
+			and s4,0x01
+			comp s4,0x01
+			ret z
+			jump wait_I
+wait_E:		rdprt s4,Fin
+			and s4,0x02
+			comp s4,0x02
+			ret z
+			jump wait_E
+wait_L:		rdprt s4,Fin
+			and s4,0x04
+			comp s4,0x04
+			ret z
+			jump wait_L
